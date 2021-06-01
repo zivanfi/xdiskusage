@@ -83,6 +83,7 @@ struct Disk {
 
 Disk* firstdisk;
 int quiet;
+static const int fontsize = 24;
 
 void alert(const char* message)
 { if (quiet) fprintf(stderr, "%s\n", message);
@@ -283,7 +284,7 @@ int main(int argc, char**argv) {
 #if FL_MAJOR_VERSION < 2
   // Make fltk look more like KDE/Windoze:
 #ifndef FL_NORMAL_SIZE // detect new versions of fltk where this is a variable
-  FL_NORMAL_SIZE = 12;
+  FL_NORMAL_SIZE = 24;
 #endif
   Fl::set_color(FL_SELECTION_COLOR,0,0,128);
 #endif
@@ -775,11 +776,11 @@ void OutputWindow::draw_tree(Node* n, int column, ull row, double scale, double 
       fl_color(FL_WHITE);
       fl_rectf(X+1,Y+1,W-1,H-1);
       fl_color(FL_BLACK);
-      if (n->size*scale > 10 && n->name && n->name[0]) {
+      if (n->size*scale > fontsize && n->name && n->name[0]) {
 	char buffer[256];
 #if FL_MAJOR_VERSION > 1
 	snprintf(buffer, 256, "%s%c%s", n->name,
-		 n->size*scale > 20 ? '\n' : ' ',
+		 n->size*scale > 2 * fontsize ? '\n' : ' ',
 		 formatk(n->size));
 	fl_draw(buffer, X+3, Y, W-3, H,
 		Fl_Align(FL_ALIGN_LEFT|FL_ALIGN_CLIP|fltk::RAW_LABEL));
@@ -793,7 +794,7 @@ void OutputWindow::draw_tree(Node* n, int column, ull row, double scale, double 
 	  buffer[i++] = c; if (c=='@' || c=='&') buffer[i++] = c;
 	}
 	snprintf(buffer+i, 256-i, "%c%s",
-		 n->size*scale > 20 ? '\n' : ' ',
+		 n->size*scale > 2 * fontsize ? '\n' : ' ',
 		 formatk(n->size));
 	fl_draw(buffer, X+3, Y, W-3, H,
 		Fl_Align(FL_ALIGN_LEFT|FL_ALIGN_CLIP));
@@ -862,7 +863,7 @@ void OutputWindow::draw_tree(Node* n, int column, ull row, double scale, double 
 void OutputWindow::draw() {
   //fl_draw_box(box(),0,0,w(),h(),color());
   double scale = (double)(h()-1)/current_root->size;
-  fl_font(0,10);
+  fl_font(0,fontsize);
   drawn_row = undrawn_column = 0;
   draw_tree(current_root, 0, 0, scale, 0);
 }
